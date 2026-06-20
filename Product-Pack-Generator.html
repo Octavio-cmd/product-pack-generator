@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Pack Generator</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{min-height:100vh;background:linear-gradient(135deg,#0a0a0a,#1a1a2e 50%,#16213e);color:#e0e0e0;font-family:'Segoe UI',system-ui,sans-serif}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px}
+  .hd{background:linear-gradient(90deg,#FF6B35,#E71D36 50%,#7B2D8E);padding:20px 32px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 20px rgba(255,107,53,.3)}
+  .hd-i{font-size:28px;background:rgba(255,255,255,.2);border-radius:10px;width:46px;height:46px;display:flex;align-items:center;justify-content:center}
+  .hd-t{font-size:22px;font-weight:800;color:#fff}.hd-s{font-size:12px;color:rgba(255,255,255,.8)}
+  .ct{max-width:1500px;margin:0 auto;padding:28px 20px;display:grid;grid-template-columns:400px 1fr;gap:28px;align-items:start}
+  @media(max-width:900px){.ct{grid-template-columns:1fr;padding:16px 12px}}
+  .pn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px}
+  .pt{font-size:16px;font-weight:700;color:#fff;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+  .fl{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:block}
+  input[type=text],input[type=number],textarea{width:100%;padding:10px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:14px;outline:none;margin-bottom:14px;font-family:inherit}
+  input::placeholder,textarea::placeholder{color:rgba(255,255,255,.25)}
+  textarea{min-height:90px;resize:vertical;line-height:1.5;font-size:13px}
+  .pg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+  .ps{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:2px dashed rgba(255,255,255,.15);background:rgba(255,255,255,.02);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-direction:column}
+  .ps.pr{border:2px solid #FF6B35;background:rgba(255,107,53,.05)}
+  .ps img{width:100%;height:100%;object-fit:contain;background:#fff}
+  .pb{position:absolute;top:4px;left:4px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.15);color:#fff}.pb.pr{background:#FF6B35}
+  .px{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .pm{position:absolute;bottom:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center}.pm.l{left:4px}.pm.r{right:4px}
+  .ht{font-size:11px;color:rgba(255,255,255,.3);margin-bottom:16px;padding:8px 10px;background:rgba(255,107,53,.06);border-radius:6px;border-left:3px solid #FF6B35}
+  .kg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px}
+  .kb{padding:10px 2px;border-radius:8px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:rgba(255,255,255,.5);font-size:15px;font-weight:700;cursor:pointer;text-align:center}
+  .kb.ac{background:var(--bg);border-color:var(--cl);color:var(--cl)}
+  .bt{width:100%;padding:14px;border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px}
+  .bt.im{background:linear-gradient(135deg,#FF6B35,#E71D36);box-shadow:0 4px 15px rgba(255,107,53,.3)}
+  .bt:disabled{opacity:.4;cursor:not-allowed}
+  .sp{width:16px;height:16px;border:2px solid rgba(255,255,255,.2);border-top:2px solid #FF6B35;border-radius:50%;animation:spin .8s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
+  .rg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .rc{border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#fff;position:relative}.rc.pr{border:2px solid #FF6B35}
+  .rc img{width:100%;aspect-ratio:1;object-fit:contain}
+  .rb{position:absolute;top:6px;left:6px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#333;color:#fff}.rb.pr{background:#FF6B35}
+  .rd{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.6);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:10px;cursor:pointer;font-weight:600}
+  .ba{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:linear-gradient(135deg,#20A39E,#2EC4B6);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:14px;margin-right:10px}
+  .es{text-align:center;padding:60px 20px;color:rgba(255,255,255,.2)}.es .ic{font-size:56px;margin-bottom:12px}.es .tx{font-size:14px}
+  .bar{width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:8px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#FF6B35,#2EC4B6);border-radius:2px;transition:width .3s}
+</style>
+</head>
+<body>
+<div class="hd">
+  <div class="hd-i">📦</div>
+  <div><div class="hd-t">Product Pack Generator</div><div class="hd-s">Generador de packs para productos</div></div>
+</div>
+<div class="ct">
+  <div class="pn">
+    <div class="pt"><span>📷</span> Fotos del Producto (<span id="pc">0</span>/6)</div>
+    <div class="pg" id="grid"></div>
+    <div class="ht">
+      <strong style="color:#FF6B35">Foto 1</strong> = se duplica × pack + globo &nbsp;|&nbsp;
+      <strong style="color:rgba(255,255,255,.5)">Fotos 2-6</strong> = fondo blanco<br>
+      <span style="font-size:10px;color:rgba(255,255,255,.2)">💡 Usa el script <b>quitar_fondos.py</b> primero para quitar fondos automáticamente</span>
+    </div>
+    <label class="fl">📦 Pack</label>
+    <div class="kg" id="pkG"></div>
+    <input type="number" min="1" max="50" placeholder="Otra cantidad..." id="customPk">
+    <button class="bt im" id="bImg" onclick="genImages()" disabled>🖼️ Generar Imágenes</button>
+    <div class="bar" id="bar" style="display:none"><div class="fill" id="barF" style="width:0%"></div></div>
+    <div id="gSt" style="font-size:11px;color:rgba(255,255,255,.4);margin-top:6px;min-height:16px"></div>
+  </div>
+  <div class="pn">
+    <div class="pt"><span>🖼️</span> Imágenes Generadas (<span id="imgCount">0</span>)</div>
+    <div id="iR"><div class="es"><div class="ic">🖼️</div><div class="tx">Sube fotos y haz clic en "Generar"</div></div></div>
+  </div>
+</div>
+<script>
+const MX=6,PKS=[1,2,3,4,5,6,7,8,9,10,12,14,15,16,18,20,24];
+const PC={1:"#333333",2:"#FF6B35",3:"#2EC4B6",4:"#E71D36",5:"#7B2D8E",6:"#0077B6",7:"#20A39E",8:"#F4A261",9:"#E63946",10:"#6A4C93",12:"#1D3557",14:"#457B9D",15:"#2D6A4F",16:"#E76F51",18:"#264653",20:"#B5179E",24:"#3A0CA3"};
+let ph=[],pk=7;
+document.getElementById("pName").addEventListener("input",uB);
+function gc(n){return PC[n]||"#FF6B35"}
+
+// Pack grid
+function rPk(){const g=document.getElementById("pkG");g.innerHTML="";PKS.forEach(n=>{const b=document.createElement("button");b.className="kb"+(pk===n?" ac":"");b.textContent=n;b.style.setProperty("--cl",gc(n));b.style.setProperty("--bg",gc(n)+"22");b.onclick=()=>{pk=n;ph.forEach(p=>p.g=null);rPk();rPh();uB()};g.appendChild(b)})}
+document.getElementById("customPk").addEventListener("input",e=>{const v=parseInt(e.target.value);if(v>0&&v<=50){pk=v;ph.forEach(p=>p.g=null);rPk();rPh();uB()}});
+
+// Photo grid with drag & drop
+let dragIdx=null;
+function rPh(){
+  const g=document.getElementById("grid");g.innerHTML="";
+  for(let i=0;i<MX;i++){
+    const s=document.createElement("div"),p=ph[i];
+    s.className="ps"+(i===0&&p?" pr":"");
+    if(p){
+      s.draggable=true;
+      s.style.cursor="grab";
+      s.ondragstart=e=>{dragIdx=i;s.style.opacity=".4";e.dataTransfer.effectAllowed="move"};
+      s.ondragend=()=>{s.style.opacity="1";dragIdx=null};
+      s.ondragover=e=>{e.preventDefault();e.dataTransfer.dropEffect="move";s.style.outline="2px solid #0F97DB"};
+      s.ondragleave=()=>{s.style.outline="none"};
+      s.ondrop=e=>{e.preventDefault();s.style.outline="none";if(dragIdx!==null&&dragIdx!==i){const item=ph.splice(dragIdx,1)[0];ph.splice(i,0,item);ph.forEach(p=>p.g=null);rPh();uB()}};
+      s.innerHTML=`<img src="${p.v}" alt=""><div class="pb ${i===0?'pr':''}">${i===0?`PRINCIPAL · ${pk}-Pack`:`FOTO ${i+1}`}</div>`;
+      const x=document.createElement("button");x.className="px";x.textContent="✕";x.onclick=e=>{e.stopPropagation();ph.splice(i,1);rPh();uB()};s.appendChild(x);
+      if(i>0){const l=document.createElement("button");l.className="pm l";l.textContent="◀";l.onclick=e=>{e.stopPropagation();[ph[i],ph[i-1]]=[ph[i-1],ph[i]];ph.forEach(p=>p.g=null);rPh()};s.appendChild(l)}
+      if(i<ph.length-1){const r=document.createElement("button");r.className="pm r";r.textContent="▶";r.onclick=e=>{e.stopPropagation();[ph[i],ph[i+1]]=[ph[i+1],ph[i]];ph.forEach(p=>p.g=null);rPh()};s.appendChild(r)}
+    }else{
+      s.ondragover=e=>{e.preventDefault();s.style.outline="2px dashed #0F97DB"};
+      s.ondragleave=()=>{s.style.outline="none"};
+      s.ondrop=e=>{e.preventDefault();s.style.outline="none"};
+      s.innerHTML=`<div style="font-size:22px;opacity:.3">+</div><div style="font-size:9px;color:rgba(255,255,255,.25)">${i===0?'Principal':`Foto ${i+1}`}</div>`;
+      s.onclick=()=>oFP();
+    }
+    g.appendChild(s);
+  }
+  document.getElementById("pc").textContent=ph.length;
+}
+function oFP(){const i=document.createElement("input");i.type="file";i.accept="image/*";i.multiple=true;i.onchange=e=>aP(e.target.files);i.click()}
+function aP(fs){
+  const rem=MX-ph.length;
+  Array.from(fs).filter(f=>f.type.startsWith("image/")).slice(0,rem).forEach(f=>{
+    const r=new FileReader();r.onload=e=>{if(ph.length<MX){ph.push({v:e.target.result,g:null});rPh();uB()}};r.readAsDataURL(f);
+  });
+}
+
+// Canvas
+function lI(s){return new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=s})}
+function gL(c,sz,imgAspect){
+  if(c===1){
+    const h=sz*.95,w=h*imgAspect;
+    let s=1;if(w>sz*.95)s=(sz*.95)/w;
+    return[{x:sz/2,y:sz/2,w:w*s,h:h*s}];
+  }
+  
+  const maxFill=0.97;
+  const gapPct=0.01;
+  
+  let minCols,maxCols;
+  if(c===2){minCols=2;maxCols=2;}
+  else if(c===3){minCols=3;maxCols=3;}
+  else if(c===4){minCols=2;maxCols=4;}
+  else if(c<=6){minCols=2;maxCols=Math.min(c,6);}
+  else if(c<=10){minCols=3;maxCols=Math.min(c,5);}
+  else{minCols=3;maxCols=Math.min(c,6);}
+  
+  let bestCols=minCols,bestArea=0,bestProdW=0,bestProdH=0;
+  
+  for(let cols=minCols;cols<=maxCols;cols++){
+    const rows=Math.ceil(c/cols);
+    const availW=sz*maxFill-sz*gapPct*(cols-1);
+    const availH=sz*maxFill-sz*gapPct*(rows-1);
+    const cellW=availW/cols;
+    const cellH=availH/rows;
+    let pw,ph;
+    const cellAspect=cellW/cellH;
+    if(imgAspect>=cellAspect){pw=cellW;ph=cellW/imgAspect;}
+    else{ph=cellH;pw=cellH*imgAspect;}
+    const area=pw*ph;
+    if(area>bestArea){bestArea=area;bestCols=cols;bestProdW=pw;bestProdH=ph;}
+  }
+  
+  const co=bestCols;
+  const ar=Math.ceil(c/co);
+  const gap=sz*gapPct;
+  const ps=[];
+  for(let i=0;i<c;i++){
+    const rw=Math.floor(i/co),cl=i%co;
+    const ir=rw===ar-1?c-rw*co:co;
+    const rowW=ir*bestProdW+(ir-1)*gap;
+    const ox=(sz-rowW)/2;
+    const totalH=ar*bestProdH+(ar-1)*gap;
+    const oy=(sz-totalH)/2;
+    ps.push({
+      x:ox+cl*(bestProdW+gap)+bestProdW/2,
+      y:oy+rw*(bestProdH+gap)+bestProdH/2,
+      w:bestProdW,h:bestProdH
+    });
+  }
+  return ps;
+}
+function dB(ctx,c,sz){
+  const r=Math.round(sz*.09),x=sz-r-Math.round(sz*.018),y=r+Math.round(sz*.018),cl="#0F97DB";
+  ctx.save();ctx.shadowColor="rgba(0,0,0,.3)";ctx.shadowBlur=25;ctx.shadowOffsetX=4;ctx.shadowOffsetY=4;
+  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=cl;ctx.fill();ctx.restore();
+  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.strokeStyle="#fff";ctx.lineWidth=Math.round(r*.07);ctx.stroke();
+  ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";
+  const numSz=c>=10?Math.round(r*.75):Math.round(r*.95);
+  ctx.font=`900 ${numSz}px "Arial Black","Impact",Arial,sans-serif`;ctx.fillText(c,x,y-r*.14);
+  ctx.font=`700 ${Math.round(r*.35)}px "Arial Black","Impact",Arial,sans-serif`;ctx.fillText("Pack",x,y+r*.4);
+}
+function gPI(img,c){
+  const sz=2048,cv=document.createElement("canvas");cv.width=sz;cv.height=sz;
+  const cx=cv.getContext("2d");cx.fillStyle="#FFF";cx.fillRect(0,0,sz,sz);
+  const ps=gL(c,sz,img.width/img.height);
+  ps.forEach(p=>{
+    cx.drawImage(img,p.x-p.w/2,p.y-p.h/2,p.w,p.h);
+  });
+  if(c>1)dB(cx,c,sz);return cv.toDataURL("image/jpeg",.92);
+}
+function gSI(img){
+  const sz=2048,cv=document.createElement("canvas");cv.width=sz;cv.height=sz;
+  const cx=cv.getContext("2d");cx.fillStyle="#FFF";cx.fillRect(0,0,sz,sz);
+  const a=img.width/img.height,pd=sz*.02,mw=sz-pd*2,mh=sz-pd*2;
+  let w,h;if(a>1){w=mw;h=mw/a}else{h=mh;w=mh*a}
+  if(w>mw){w=mw;h=w/a}if(h>mh){h=mh;w=h*a}
+  cx.drawImage(img,(sz-w)/2,(sz-h)/2,w,h);return cv.toDataURL("image/jpeg",.92);
+}
+
+// Generate images
+async function genImages(){
+  if(!ph.length)return;
+  const btn=document.getElementById("bImg"),bar=document.getElementById("bar"),fill=document.getElementById("barF"),st=document.getElementById("gSt");
+  btn.disabled=true;btn.innerHTML='<span class="sp"></span> Procesando...';bar.style.display="block";fill.style.width="0%";
+  try{
+    for(let i=0;i<ph.length;i++){
+      st.textContent=`🖼️ Generando imagen ${i+1}/${ph.length}...`;
+      const img=await lI(ph[i].v);
+      ph[i].g=i===0?gPI(img,pk):gSI(img);
+      fill.style.width=`${((i+1)/ph.length)*100}%`;
+    }
+    st.textContent=`✅ ${ph.length} imágenes generadas`;rR();
+  }catch(e){st.textContent=`❌ ${e.message}`}
+  setTimeout(()=>bar.style.display="none",2000);uB();
+}
+
+// Render results
+function rR(){
+  const c=document.getElementById("iR"),g=ph.filter(p=>p.g);
+  document.getElementById("imgCount").textContent=g.length;
+  if(!g.length){c.innerHTML='<div class="es"><div class="ic">🖼️</div><div class="tx">Sube fotos y genera</div></div>';return}
+  let h='<div class="rg">';
+  ph.forEach((p,i)=>{if(!p.g)return;h+=`<div class="rc ${i===0?'pr':''}"><img src="${p.g}"><div class="rb ${i===0?'pr':''}">${i===0?`Principal · ${pk}-Pack`:`Foto ${i+1}`}</div><button class="rd" onclick="dl(${i})">⬇️</button></div>`});
+  h+=`</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px"><button class="ba" onclick="dlA()">⬇️ Descargar Todas (${g.length})</button></div>`;
+  c.innerHTML=h;
+}
+
+// Actions
+function dl(i){if(!ph[i]?.g)return;const a=document.createElement("a");a.download=`product_${pk}pack_${i===0?'PRINCIPAL':'foto_'+(i+1)}.jpg`;a.href=ph[i].g;a.click()}
+function dlA(){ph.forEach((p,i)=>{if(p.g)dl(i)})}
+function uB(){
+  const bi=document.getElementById("bImg");
+  bi.disabled=ph.length===0;bi.innerHTML=`🖼️ Generar ${ph.length} Imagen${ph.length!==1?'es':''} (${pk}-Pack)`;
+}
+rPk();rPh();uB();
+</script>
+</body>
+</html>
